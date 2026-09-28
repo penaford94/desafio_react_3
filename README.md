@@ -1,49 +1,65 @@
-# Pizzería Mamma Mía - Hito 2
+# Pizzería Mamma Mía — Hito 3
 
-Aplicación desarrollada con React, Vite y Bootstrap para el **Hito 2 de Pizzería Mamma Mía**. En este proyecto implementé los formularios de registro e inicio de sesión utilizando estados, eventos y validaciones.
+Aplicación desarrollada con **React, Vite y Bootstrap** para el Hito 3 del desafío Pizzería Mamma Mía. Esta entrega amplía el trabajo del Hito 2 con renderización dinámica de pizzas y un carrito de compras simulado.
 
-Esta versión corresponde a una mejora de mi implementación inicial. Después de revisar el funcionamiento comprendí que, aunque era posible validar los inputs directamente con botones y eventos `onClick`, semánticamente era más correcto utilizar formularios HTML reales con `<form>`, `onSubmit` y botones de tipo `submit`.
+## Cambios respecto del Hito 2
 
-## Objetivo del proyecto
+| Área | Hito 2 | Hito 3 |
+| --- | --- | --- |
+| Vista principal | Formularios de registro e inicio de sesión para su evaluación. | `App.jsx` muestra `Cart` entre `Navbar` y `Footer`; `Home`, `Login` y `Register` permanecen en el proyecto, comentados en `App.jsx`. |
+| Datos | Componentes de interfaz y formularios con estado. | `src/utils/pizza.js` contiene `pizzas` (catálogo) y `pizzaCart` (carrito inicial). |
+| Catálogo | Tarjetas de pizza. | `Home.jsx` recorre `pizzas` y crea una `CardPizza` por producto; `CardPizza.jsx` muestra los datos recibidos por props y recorre los ingredientes en elementos `<li>`. |
+| Carrito | No era la vista de evaluación. | `Cart.jsx` muestra productos, permite modificar cantidades, elimina los que llegan a cero y calcula el total. |
+| Estilos | Bootstrap y CSS global. | Se añaden las clases `.cart-title` y `.cart-total` en `index.css` para los encabezados del carrito. |
 
-El objetivo del hito fue implementar:
+## Funcionalidades del Hito 3
 
-- Un formulario de registro con email, contraseña y confirmación de contraseña.
-- Un formulario de inicio de sesión con email y contraseña.
-- Validaciones mediante JavaScript y estados de React.
-- Mensajes de error y éxito según el resultado de cada validación.
-- Una presentación visual coherente con la estética del Hito 1.
+### Catálogo de pizzas
 
-## Tecnologías utilizadas
+`Home.jsx` importa el arreglo `pizzas` desde `src/utils/pizza.js` y utiliza `map()` para renderizar seis componentes `CardPizza`. Cada tarjeta recibe nombre, descripción, precio, imagen e ingredientes mediante props. Dentro de `CardPizza.jsx`, los ingredientes se recorren para generar un `<li>` por cada uno.
 
-- React
-- Vite
-- JavaScript ES6+
-- Bootstrap 5
-- CSS3
+La vista `Home` está implementada, pero queda comentada en `App.jsx` durante la evaluación del carrito, tal como indica el enunciado del hito.
+
+### Carrito de compras
+
+`Cart.jsx` inicializa su estado con `pizzaCart` y muestra la imagen, el nombre, el precio unitario y la cantidad de cada pizza. Los botones **+** y **−** actualizan la cantidad mediante `setCart`; al disminuir una unidad que tenía cantidad 1, el producto desaparece del arreglo y de la pantalla.
+
+El total se calcula a partir del estado actual:
+
+```js
+const total = cart.reduce(
+  (sum, pizza) => sum + pizza.price * pizza.count,
+  0
+);
+```
+
+Los importes se muestran con separadores de miles usando `formatCurrency()`. Cuando ya no quedan productos se muestra el mensaje «Tu carrito está vacío» y el total pasa a `$0`. El botón **Pagar** se presenta como parte de la interfaz, pero todavía no ejecuta una compra.
+
+El indicador de total en `Navbar.jsx` permanece estático en esta etapa; el total que responde a los botones es el que aparece dentro de `Cart.jsx`.
+
+### Componentes conservados
+
+`Login.jsx` y `Register.jsx`, desarrollados para el Hito 2, siguen disponibles en `src/components/`. Sus formularios y validaciones se conservan para hitos posteriores. La aplicación aún no utiliza rutas para alternar entre esas pantallas.
+
+## Tecnologías
+
+- React y JavaScript (JSX).
+- Vite para desarrollo y compilación.
+- Bootstrap 5 para componentes y clases utilitarias.
+- CSS personalizado en `src/index.css`.
 
 ## Instalación y ejecución
 
-Clonar el repositorio:
+Se requiere Node.js y npm. Desde una terminal:
 
 ```bash
-git clone URL_DEL_REPOSITORIO
-cd desafio_react_2
-```
-
-Instalar dependencias:
-
-```bash
+git clone https://github.com/penaford94/desafio_react_3.git
+cd desafio_react_3
 npm install
-```
-
-Iniciar el proyecto:
-
-```bash
 npm run dev
 ```
 
-Comprobar la calidad y compilación:
+Abrir en el navegador la dirección local que indique Vite. Para ejecutar las comprobaciones disponibles:
 
 ```bash
 npm run lint
@@ -54,255 +70,34 @@ npm run build
 
 ```text
 src/
-|-- assets/
-|   `-- Header.jpg
-|-- components/
-|   |-- CardPizza.jsx
-|   |-- Footer.jsx
-|   |-- Header.jsx
-|   |-- Home.jsx
-|   |-- Login.jsx
-|   |-- Navbar.jsx
-|   `-- Register.jsx
-|-- utils/
-|   `-- formatCurrency.js
-|-- App.jsx
-|-- index.css
-`-- main.jsx
+├── components/
+│   ├── CardPizza.jsx     # Tarjeta del catálogo e ingredientes
+│   ├── Cart.jsx          # Carrito, cantidades y total
+│   ├── Home.jsx          # Listado dinámico de pizzas
+│   ├── Login.jsx         # Formulario conservado del Hito 2
+│   ├── Register.jsx      # Formulario conservado del Hito 2
+│   ├── Navbar.jsx
+│   └── Footer.jsx
+├── utils/
+│   ├── pizza.js          # Datos del catálogo y carrito inicial
+│   └── formatCurrency.js # Formato de importes
+├── App.jsx               # Activa Cart para este hito
+├── index.css             # Estilos globales y títulos del carrito
+└── main.jsx              # Entrada de React e importación de Bootstrap
 ```
 
-## Funcionalidades implementadas
+## Comprobaciones manuales sugeridas
 
-### Registro
+1. Al abrir la aplicación, comprobar que aparecen las tres pizzas iniciales del carrito y un total de **$19.190**.
+2. Pulsar **+** en una pizza: su cantidad aumenta y el total suma su precio unitario.
+3. Pulsar **−** en una pizza con cantidad 1: se elimina y el total disminuye.
+4. Eliminar todas las pizzas: aparece el mensaje de carrito vacío y el total es **$0**.
+5. Para revisar el catálogo, activar temporalmente `Home` en `App.jsx` y comentar `Cart`: deben aparecer seis tarjetas y los ingredientes de cada una.
 
-El componente `Register.jsx` permite ingresar:
+## Alcance actual
 
-- Email.
-- Contraseña.
-- Confirmación de contraseña.
-
-Sus validaciones comprueban que:
-
-- Todos los campos tengan información.
-- El email no contenga únicamente espacios.
-- La contraseña tenga al menos seis caracteres.
-- Ambas contraseñas sean iguales.
-
-### Inicio de sesión
-
-El componente `Login.jsx` permite ingresar:
-
-- Email.
-- Contraseña.
-
-Sus validaciones comprueban que:
-
-- Ambos campos sean obligatorios.
-- La contraseña tenga al menos seis caracteres.
-
-## Mejora semántica de los formularios
-
-En mi primera versión agrupé visualmente los inputs y ejecuté las validaciones con `onClick`. Luego entendí que un conjunto de campos destinado a enviar información debe representarse mediante la etiqueta semántica `<form>`.
-
-La estructura corregida utiliza:
-
-```jsx
-<form onSubmit={handleSubmit}>
-  {/* Campos del formulario */}
-
-  <button type="submit">
-    Enviar
-  </button>
-</form>
-```
-
-Esta opción es mejor porque:
-
-- Describe correctamente el propósito del contenido.
-- Permite enviar el formulario presionando Enter.
-- Facilita la navegación con teclado y el uso de tecnologías de asistencia.
-- Centraliza el envío y la validación en un único evento `onSubmit`.
-- Evita depender exclusivamente del clic sobre un botón.
-
-Dentro de `handleSubmit` utilizo:
-
-```jsx
-const handleSubmit = (event) => {
-  event.preventDefault();
-  // Validaciones
-};
-```
-
-`event.preventDefault()` evita que el navegador recargue la página al enviar el formulario. De esta manera React conserva el control de la interfaz y de sus estados.
-
-## Estados e inputs controlados
-
-Cada campo recibe su valor desde un estado y lo actualiza mediante `onChange`:
-
-```jsx
-const [email, setEmail] = useState("");
-
-<input
-  type="email"
-  value={email}
-  onChange={(event) => setEmail(event.target.value)}
-/>
-```
-
-Elegí mantener los inputs controlados porque el estado de React se convierte en la fuente de verdad. Esto facilita validar, limpiar y utilizar posteriormente los datos.
-
-## Corrección de operadores lógicos
-
-En la primera versión utilicé el operador binario `&` para unir condiciones. Aunque podía producir un resultado verdadero o falso al convertir los valores en `1` y `0`, comprendí que el operador apropiado para condiciones booleanas es `&&`:
-
-```jsx
-if (
-  email.length > 0 &&
-  password.length > 0 &&
-  passwordConfirmation.length > 0
-) {
-  // Datos completos
-}
-```
-
-`&&` expresa correctamente una operación lógica y detiene la evaluación cuando encuentra una condición falsa.
-
-## Tipo correcto de los campos
-
-También corregí el tipo de cada input:
-
-```jsx
-<input type="email" />
-<input type="password" />
-```
-
-`type="email"` comunica al navegador el tipo de información esperada, mientras que `type="password"` oculta visualmente los caracteres ingresados.
-
-Además, cada campo tiene un `label` asociado mediante `htmlFor` e `id`:
-
-```jsx
-<label htmlFor="login-email">Email</label>
-<input id="login-email" type="email" />
-```
-
-Esta asociación mejora la accesibilidad y permite enfocar el input al seleccionar su etiqueta.
-
-## Mensajes administrados con estado
-
-En lugar de depender únicamente de `alert()`, guardé el resultado de la validación en un estado:
-
-```jsx
-const [feedback, setFeedback] = useState(null);
-```
-
-Según el resultado, actualizo el mensaje:
-
-```jsx
-setFeedback({
-  type: "success",
-  message: "¡Inicio de sesión exitoso!",
-});
-```
-
-Después lo muestro utilizando las alertas de Bootstrap:
-
-```jsx
-{feedback && (
-  <div
-    className={`alert alert-${feedback.type}`}
-    role="alert"
-  >
-    {feedback.message}
-  </div>
-)}
-```
-
-Con esta solución el mensaje forma parte de la interfaz, no bloquea el navegador y puede adoptar estilos diferentes para éxito y error.
-
-## Estilos con Bootstrap y CSS
-
-Bootstrap se instala con:
-
-```bash
-npm install bootstrap
-```
-
-Y se importa globalmente desde `main.jsx`:
-
-```jsx
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./index.css";
-```
-
-Utilicé clases de Bootstrap como:
-
-- `card`, `card-body` y `shadow-lg` para el contenedor del formulario.
-- `form-label` y `form-control` para etiquetas e inputs.
-- `btn` y `w-100` para el botón principal.
-- `alert-success` y `alert-danger` para los mensajes.
-- `p-4`, `mb-3` y `mt-4` para manejar el espaciado.
-
-También incorporé CSS personalizado para conservar la identidad del Hito 1:
-
-- Navbar y Footer oscuros.
-- Imagen de pizzas como fondo.
-- Capa oscura para mantener el contraste.
-- Tarjeta blanca centrada.
-- Botones rojos asociados a la identidad de la pizzería.
-- Diseño responsivo para pantallas pequeñas.
-
-## Visualización de cada componente
-
-Durante la evaluación muestro un formulario a la vez desde `App.jsx`. Por ejemplo, para probar Login:
-
-```jsx
-<div className="app">
-  <Navbar />
-
-  <main className="auth-main">
-    <Login />
-  </main>
-
-  <Footer />
-</div>
-```
-
-Para probar Register reemplazo `<Login />` por `<Register />`. Esto mantiene la pantalla ordenada y permite comparar cada formulario con el diseño solicitado.
-
-## Casos de prueba
-
-### Registro
-
-| Entrada | Resultado esperado |
-| --- | --- |
-| Campos vacíos | Mensaje de campos obligatorios |
-| Contraseña menor a 6 caracteres | Mensaje de longitud mínima |
-| Contraseñas diferentes | Mensaje indicando que no coinciden |
-| Datos válidos | Registro exitoso y limpieza de campos |
-
-### Login
-
-| Entrada | Resultado esperado |
-| --- | --- |
-| Campos vacíos | Mensaje de campos obligatorios |
-| Contraseña menor a 6 caracteres | Mensaje de longitud mínima |
-| Datos válidos | Inicio de sesión exitoso y limpieza de campos |
-
-## Principales aprendizajes
-
-Al comparar ambas versiones comprendí que una aplicación no solo debe funcionar visualmente. También debe utilizar una estructura que comunique correctamente la función de cada elemento.
-
-Las mejoras más importantes fueron:
-
-- Utilizar `<form>` y `onSubmit` para representar un formulario real.
-- Usar `event.preventDefault()` para evitar recargar la aplicación.
-- Reemplazar `&` por el operador lógico `&&`.
-- Usar inputs controlados por React.
-- Asociar correctamente los `label` con sus inputs.
-- Utilizar `type="password"` para proteger visualmente las contraseñas.
-- Mostrar feedback dentro de la interfaz mediante estados y Bootstrap.
-- Separar cada vista para conservar una presentación clara.
+El carrito utiliza datos locales y estado de React; al recargar la página vuelve a las cantidades iniciales. Los botones de navegación, **Añadir** de las tarjetas y **Pagar** aún no conectan vistas ni completan una compra. Estas interacciones quedan para los siguientes hitos.
 
 ## Autor
 
-Proyecto desarrollado y mejorado por **penaford94** como parte del desafío **Pizzería Mamma Mía - Hito 2**.
+Desarrollado por [penaford94](https://github.com/penaford94) para el desafío Pizzería Mamma Mía, Hito 3.
