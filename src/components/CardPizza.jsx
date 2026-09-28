@@ -1,6 +1,6 @@
 import { formatCurrency } from "../utils/formatCurrency";
 
-const CardPizza = ({ name, price, ingredients, img }) => {
+const CardPizza = ({ name, price, ingredients, img, desc}) => {
   return (
     <article className="card h-100">
       <img
@@ -11,6 +11,7 @@ const CardPizza = ({ name, price, ingredients, img }) => {
 
       <div className="card-body d-flex flex-column">
         <h2 className="card-title fs-5">Pizza {name}</h2>
+        <p className="card-title fs-5">Descripción: {desc}</p>
 
         <hr />
 
